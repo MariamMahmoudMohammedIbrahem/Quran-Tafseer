@@ -3,28 +3,46 @@ import 'commons.dart';
 class QuranTafseer extends StatelessWidget {
   const QuranTafseer({super.key});
 
-  // This widget is the root of your application.
+  Future<bool> hasSeenOnboarding() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('seenOnboarding') ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Quraan',
-      theme: lightTheme,  // Or use darkTheme if needed
+      theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
-      // Set locale to Arabic and add localization support
-      locale: Locale('ar', ''),  // Arabic locale
+      locale: Locale('ar', ''),
       supportedLocales: [
-        Locale('en', ''),  // English
-        Locale('ar', ''),  // Arabic
+        Locale('en', ''),
+        Locale('ar', ''),
       ],
-      // Add all necessary delegates
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: const SurahListScreen(),
+      home: FutureBuilder<bool>(
+        future: hasSeenOnboarding(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // While loading prefs, show splash/loading
+            return Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          } else {
+            if (snapshot.data == true) {
+              return HomeScreen(); // Already seen onboarding
+            } else {
+              return OnboardingScreen(); // First time
+            }
+          }
+        },
+      ),
     );
   }
 }

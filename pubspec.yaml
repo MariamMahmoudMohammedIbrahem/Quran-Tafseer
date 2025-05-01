@@ -5,28 +5,36 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.3.0
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-
+  shared_preferences: ^2.0.15
+  just_audio: ^0.9.32
+  http: ^1.2.0
+  html: ^0.15.0
+  audioplayers: ^5.2.1
+  path_provider: ^2.1.2
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
-
   assets:
-     - assets/audio/
-     - assets/quraan/
-     - assets/tafseer/
-     - assets/images/
-     - assets/surahs.json
+    - assets/icon/
+    - assets/images/
+    - assets/json/
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon-q.png"
