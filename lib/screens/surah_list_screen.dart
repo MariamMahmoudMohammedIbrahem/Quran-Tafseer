@@ -1,5 +1,11 @@
 import '../commons.dart';
 
+// ========== Quran Surah List Screen ==============
+
+/// A screen that displays the list of all Quranic Surahs (chapters)
+///
+/// This screen loads Surah data from a local JSON file and presents it in
+/// a scrollable list. Each item is tappable to navigate to the Quran reader.
 class SurahListScreen extends StatefulWidget {
   const SurahListScreen({super.key});
 
@@ -16,9 +22,17 @@ class _SurahListScreenState extends State<SurahListScreen> {
     loadSurahs();
   }
 
+  /// Loads Surah data from the local JSON file
+  ///
+  /// TODO: Consider implementing caching mechanism for better performance
+  /// TODO: Add error handling for JSON parsing failures
   Future<void> loadSurahs() async {
-    final String jsonString = await rootBundle.loadString('assets/surahs.json');
+    // Load JSON file from assets
+    final String jsonString = await rootBundle.loadString('assets/json/surahs.json');
+
+    // Parse JSON data into Surah objects
     final List<dynamic> jsonData = json.decode(jsonString);
+
     setState(() {
       surahs = jsonData.map((e) => Surah.fromJson(e)).toList();
     });
@@ -31,16 +45,22 @@ class _SurahListScreenState extends State<SurahListScreen> {
       body: surahs.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: ListView.builder(
-                    itemCount: surahs.length,
-                    itemBuilder: (context, index) => SurahItem(surah: surahs[index]),
-                  ),
-          ),
+        padding: const EdgeInsets.only(top: 8.0),
+        child: ListView.builder(
+          itemCount: surahs.length,
+          itemBuilder: (context, index) => SurahItem(surah: surahs[index]),
+        ),
+      ),
     );
   }
 }
 
+// ========== Surah List Item Widget ==============
+
+/// A custom ListTile widget that displays information about a single Surah
+///
+/// Shows the Surah number, name, type (Makki/Madani), and verse count.
+/// Tapping the item navigates to the Quran reader for that Surah.
 class SurahItem extends StatelessWidget {
   final Surah surah;
 
@@ -53,15 +73,23 @@ class SurahItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
+        // Surah number in a circular avatar
         leading: CircleAvatar(
-          backgroundColor: Colors.green[100],
-          child: Text('${surah.number}', style: TextStyle(color: Colors.black)),
+          backgroundColor: MyColors.deepGreen,
+          child: Text('${surah.number}', style: const TextStyle(color: MyColors.black)),
         ),
-        title: Text(surah.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        // Main Surah name with larger font
+        title: Text(surah.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        // Surah type (Makki/Madani)
         subtitle: Text(surah.type),
+        // Verse count displayed on the right side
         trailing: Text('${surah.ayahCount} آية'),
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> QuranReader(surahName: surah.name),),);
+        onTap: () {
+          // TODO: Consider using named routes instead of direct navigation
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => QuranReader(surahName: surah.name)),
+          );
         },
       ),
     );
