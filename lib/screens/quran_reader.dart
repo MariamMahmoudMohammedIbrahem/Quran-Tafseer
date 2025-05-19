@@ -34,7 +34,7 @@ class _QuranReaderState extends State<QuranReader> {
   /// Loads Surah data from local JSON and initiates API fetch
   Future<void> _loadSurahData() async {
     try {
-      final surahNumber = await _getSurahNumberFromAssets();
+      final surahNumber = await getSurahNumberFromAssets(widget.surahName);
       if (surahNumber != null) {
         await _fetchSurahText(surahNumber);
       } else {
@@ -52,6 +52,7 @@ class _QuranReaderState extends State<QuranReader> {
   }
 
   /// Retrieves Surah number from local JSON assets
+  /*
   Future<int?> _getSurahNumberFromAssets() async {
     final String jsonString = await rootBundle.loadString('assets/json/surahs.json');
     final List<dynamic> surahList = json.decode(jsonString);
@@ -63,14 +64,15 @@ class _QuranReaderState extends State<QuranReader> {
 
     return surahData?['number'];
   }
+  */
 
   /// Fetches Surah text from AlQuran Cloud API
   Future<void> _fetchSurahText(int surahNumber) async {
     try {
       final response = await http.get(
         Uri.parse('$_apiBaseUrl/$surahNumber/ar.alafasy'),
-      );
 
+      );
       if (!mounted) return;
 
       if (response.statusCode == 200) {

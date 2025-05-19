@@ -1,63 +1,45 @@
 import '../commons.dart';
 
-// ========== Onboarding Screen ==============
-
-/// Screen that introduces the app features through a guided tour.
-///
-/// This screen:
-/// - Displays a series of onboarding pages with images and descriptions
-/// - Tracks completion in SharedPreferences
-/// - Provides skip and completion options
-/// - Uses a page indicator for navigation
+// --> Onboarding screen that introduces the app with multiple pages
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
-
   @override
-  OnboardingScreenState createState() => OnboardingScreenState();
+  _OnboardingScreenState createState() => _OnboardingScreenState();
 }
 
-/// State management for the OnboardingScreen
-class OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _controller = PageController();
-  int _currentPage = 0;
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final PageController _controller = PageController(); // Controller for page view
+  int _currentPage = 0; // Current page index
 
-  /// List of onboarding content (images, titles, descriptions)
-  ///
-
-  final List<Map<String, String>> onboardingData = [
+  // --> List of onboarding data (image, title, description)
+  List<Map<String, String>> onboardingData = [
     {
-      'image': 'assets/images/onboarding1.png',
+      'image': 'assets/images/quran1.png',
       'title': 'مرحبًا بك',
       'desc': 'اكتشف نور القرآن وابدأ رحلتك الروحية معنا',
     },
     {
-      'image': 'assets/images/onboarding2.png',
+      'image': 'assets/images/quran2.png',
       'title': 'قراءة سهلة',
       'desc': 'تصفح القرآن الكريم بسلاسة ووضوح',
     },
     {
-      'image': 'assets/images/onboarding3.png',
+      'image': 'assets/images/quran3.png',
       'title': 'تفسير مبسط',
       'desc': 'تعرف على المعاني بطريقة سهلة',
     },
     {
-      'image': 'assets/images/onboarding4.png',
+      'image': 'assets/images/quran4.png',
       'title': 'ابدأ الآن',
       'desc': 'املأ قلبك بذكر الله وابدأ رحلتك اليوم',
     },
   ];
 
-  /// Completes the onboarding flow and navigates to home screen
-  ///
-  /// Marks onboarding as seen in SharedPreferences and replaces
-  /// the current route with the HomeScreen
-  Future<void> finishOnboarding() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('seenOnboarding', true);
-    if (!mounted) return;
-
+  // --> Function to finish onboarding and navigate to home screen
+  void finishOnboarding() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('seenOnboarding', true); // Save onboarding completion
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
+      MaterialPageRoute(builder: (_) => HomeScreen()), // Navigate to home
     );
   }
 
@@ -66,134 +48,88 @@ class OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          // Skip button (shown on all pages except last)
           if (_currentPage < onboardingData.length - 1)
             TextButton(
-              onPressed: finishOnboarding,
-              child: Text(
-                "تخطي",
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: MyColors.blackShade,
-                ),
-              ),
+              onPressed: finishOnboarding, // Skip onboarding
+              child: Text("Skip", style: TextStyle(color: Colors.blue)),
             ),
         ],
-        backgroundColor: MyColors.lightWhite,
-        elevation: 0,
+        backgroundColor: Colors.white,
+        elevation: 0, // No shadow
       ),
       body: Column(
         children: [
-          // PageView for onboarding content
           Expanded(
             child: PageView.builder(
-              controller: _controller,
-              itemCount: onboardingData.length,
-              onPageChanged: (index) => setState(() => _currentPage = index),
+              controller: _controller, // Page view controller
+              itemCount: onboardingData.length, // Number of pages
+              onPageChanged: (index) {
+                setState(() => _currentPage = index); // Update current page
+              },
               itemBuilder: (context, index) {
-                return OnboardingPageContent(
-                  image: onboardingData[index]['image']!,
-                  title: onboardingData[index]['title']!,
-                  description: onboardingData[index]['desc']!,
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      onboardingData[index]['image']!, // Display image
+                      height: 200,
+                    ),
+                    SizedBox(height: 30),
+                    Text(
+                      onboardingData[index]['title']!, // Display title
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        onboardingData[index]['desc']!, // Display description
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
           ),
-
-          // Page indicator dots
-
-          // Spacing and "Get Started" button (shown only on last page)
-          _buildPageIndicator(),
-          height24,
+          // --> Dots indicator for onboarding pages
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              onboardingData.length,
+                  (index) => buildDot(index),
+            ),
+          ),
+          SizedBox(height: 20),
+          // --> Show "ابدأ" button only on last page
           if (_currentPage == onboardingData.length - 1)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: ElevatedButton(
-                onPressed: finishOnboarding,
-                child: const Text("ابدأ"),
+                onPressed: finishOnboarding, // Finish onboarding
+                child: Text("ابدأ"),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                  backgroundColor: Colors.green,
+                ),
               ),
             ),
-          height40,
+          SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  /// Builds the row of page indicator dots
-  Widget _buildPageIndicator() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        onboardingData.length,
-            (index) => buildDot(index, _currentPage),
+  // --> Build single dot for page indicator
+  Widget buildDot(int index) {
+    return Container(
+      height: 10,
+      width: _currentPage == index ? 24 : 10, // Active dot is wider
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+        color: _currentPage == index ? Colors.green : Colors.grey, // Active color
+        borderRadius: BorderRadius.circular(20),
       ),
-    );
-  }
-
-  /// Creates an individual dot for the page indicator
-  ///
-  /// [index]: The dot's position in the indicator
-  /// [currentPage]: The currently active page index
-  // Widget _buildDot(int index, int currentPage) {
-  //   return Container(
-  //     margin: const EdgeInsets.symmetric(horizontal: 4),
-  //     width: currentPage == index ? 12 : 8,
-  //     height: currentPage == index ? 12 : 8,
-  //     decoration: BoxDecoration(
-  //       color: currentPage == index ? MyColors.deepGreen : MyColors.darkGrey,
-  //       shape: BoxShape.circle,
-  //     ),
-  //   );
-  // }
-}
-
-// ========== Onboarding Page Content Widget ==============
-
-/// Reusable widget for displaying onboarding page content
-///
-/// Shows an image, title, and description in a centered column layout
-class OnboardingPageContent extends StatelessWidget {
-  final String image;
-  final String title;
-  final String description;
-
-  const OnboardingPageContent({
-    super.key,
-    required this.image,
-    required this.title,
-    required this.description,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Onboarding image
-        Image.asset(
-          image,
-          height: 200,
-        ),
-
-        // Spacing
-        height32,
-
-        // Title text
-        Text(
-          title,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-
-        // Description text
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            description,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-      ],
     );
   }
 }

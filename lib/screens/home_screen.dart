@@ -137,12 +137,12 @@ class HomeScreen extends StatelessWidget {
           height16,
           buildHomeButton(
             title: 'قراءة تفسير القرآن',
-            onTap: () => _showUnderDevelopmentSnackbar(context),
+            onTap: () => _navigateTo(context, TafseerListScreen()),
           ),
           height16,
           buildHomeButton(
             title: 'سماع تفسير القرآن',
-            onTap: () => _navigateTo(context, TafseerListScreen()),
+            onTap: () => _navigateTo(context, TafseerAudioScreen()),
           ),
         ],
       ),
