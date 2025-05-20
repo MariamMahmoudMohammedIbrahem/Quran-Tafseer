@@ -33,3 +33,6 @@ export 'screens/quran_audio_screen.dart';
 export 'package:dio/dio.dart';
 export 'package:path_provider/path_provider.dart';
 export 'dart:io';
+
+export '../models/common_functions.dart';
+export '../models/common_widgets.dart';
