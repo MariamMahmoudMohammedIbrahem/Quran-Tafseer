@@ -26,3 +26,4 @@ Future<int?> getSurahNumberFromAssets(String surahName) async {
 
   return surahData?['number'];
 }
+
