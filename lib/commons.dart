@@ -36,3 +36,11 @@ export 'dart:io';
 
 export '../models/common_functions.dart';
 export '../models/common_widgets.dart';
+export 'screens/quran_options_screen.dart';
+export 'screens/tafseer_options_screen.dart';
+export 'screens/main_navigation_screen.dart';
+export '../styles/theme_provider.dart';
+export 'package:provider/provider.dart';
+export '../screens/BookmarksScreen.dart';
+export '../models/bookmark.dart';
+export '../providers/bookmark_provider.dart';

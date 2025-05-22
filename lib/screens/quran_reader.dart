@@ -1,19 +1,15 @@
 import '../commons.dart';
 import 'package:http/http.dart' as http;
 
-// ========== Quran Reader Screen ==============
-
-/// Screen that displays the full text of a Quranic Surah (chapter) in Arabic.
-///
-/// Features:
-/// - Loads Surah data from local JSON to get Surah number
-/// - Fetches Surah text from AlQuran Cloud API
-/// - Displays verses in a scrollable list
-/// - Handles loading and error states
 class QuranReader extends StatefulWidget {
   final String surahName;
+  final int? initialAyahIndex;
 
-  const QuranReader({super.key, required this.surahName});
+  const QuranReader({
+    super.key,
+    required this.surahName,
+    this.initialAyahIndex,
+  });
 
   @override
   State<QuranReader> createState() => _QuranReaderState();
@@ -24,6 +20,8 @@ class _QuranReaderState extends State<QuranReader> {
   bool isLoading = true;
   String errorMessage = '';
   static const String _apiBaseUrl = 'https://api.alquran.cloud/v1/surah';
+  late BookmarkProvider bookmarkProvider;
+  final ScrollController _scrollController = ScrollController(); // ← Scroll controller
 
   @override
   void initState() {
@@ -31,7 +29,12 @@ class _QuranReaderState extends State<QuranReader> {
     _loadSurahData();
   }
 
-  /// Loads Surah data from local JSON and initiates API fetch
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    bookmarkProvider = Provider.of<BookmarkProvider>(context);
+  }
+
   Future<void> _loadSurahData() async {
     try {
       final surahNumber = await getSurahNumberFromAssets(widget.surahName);
@@ -51,27 +54,10 @@ class _QuranReaderState extends State<QuranReader> {
     }
   }
 
-  /// Retrieves Surah number from local JSON assets
-  /*
-  Future<int?> _getSurahNumberFromAssets() async {
-    final String jsonString = await rootBundle.loadString('assets/json/surahs.json');
-    final List<dynamic> surahList = json.decode(jsonString);
-
-    final surahData = surahList.firstWhere(
-          (surah) => surah['name'] == widget.surahName,
-      orElse: () => null,
-    );
-
-    return surahData?['number'];
-  }
-  */
-
-  /// Fetches Surah text from AlQuran Cloud API
   Future<void> _fetchSurahText(int surahNumber) async {
     try {
       final response = await http.get(
         Uri.parse('$_apiBaseUrl/$surahNumber/ar.alafasy'),
-
       );
       if (!mounted) return;
 
@@ -83,6 +69,17 @@ class _QuranReaderState extends State<QuranReader> {
           ayahs = ayahList.map((ayah) => ayah['text'] as String).toList();
           isLoading = false;
         });
+
+        if (widget.initialAyahIndex != null &&
+            widget.initialAyahIndex! < ayahs.length) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _scrollController.animateTo(
+              widget.initialAyahIndex! * 80.0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          });
+        }
       } else {
         setState(() {
           errorMessage = 'فشل تحميل السورة: ${response.statusCode}';
@@ -100,69 +97,80 @@ class _QuranReaderState extends State<QuranReader> {
 
   @override
   Widget build(BuildContext context) {
+    final fontSize = Provider.of<ThemeProvider>(context).fontSize;
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(),
-    );
-  }
-
-  /// Builds the screen's app bar
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: Text(widget.surahName),
-      // TODO: Add bookmark
-    );
-  }
-
-  /// Builds the main content body based on current state
-  Widget _buildBody() {
-    if (isLoading) {
-      return _buildLoadingIndicator();
-    } else if (errorMessage.isNotEmpty) {
-      return _buildErrorDisplay();
-    } else {
-      return _buildSurahText();
-    }
-  }
-
-  /// Shows loading indicator while fetching data
-  Widget _buildLoadingIndicator() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  /// Displays error message if loading fails
-  Widget _buildErrorDisplay() {
-    return Center(
-      child: Text(
-        errorMessage,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 18, color: MyColors.red),
-      ),
-    );
-  }
-
-  /// Builds the scrollable list of Quran verses
-  Widget _buildSurahText() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: ayahs.length,
-      itemBuilder: (context, index) => _buildAyahItem(index),
-    );
-  }
-
-  /// Builds individual verse item
-  Widget _buildAyahItem(int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        '${index + 1}. ${ayahs[index]}',
-        textAlign: TextAlign.right,
-        style: const TextStyle(
-          fontSize: 20,
-          fontFamily: 'UthmanicHafs', // TODO: Add proper font
+      appBar: AppBar(title: Text(widget.surahName)),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : errorMessage.isNotEmpty
+          ? Center(
+        child: Text(
+          errorMessage,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 18, color: MyColors.red),
         ),
+      )
+          : ListView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.all(16),
+        itemCount: ayahs.length,
+        itemBuilder: (context, index) {
+          final ayahId = '${widget.surahName}_$index';
+          final isBookmarked =
+          bookmarkProvider.isBookmarked(ayahId);
+
+          return GestureDetector(
+            onLongPress: () {
+              final ayahText = ayahs[index];
+              final bookmark = Bookmark(
+                id: ayahId,
+                surahName: widget.surahName,
+                ayahIndex: index,
+                snippet: ayahText,
+                createdAt: DateTime.now(),
+              );
+
+              if (isBookmarked) {
+                bookmarkProvider.removeBookmark(ayahId);
+              } else {
+                bookmarkProvider.addBookmark(bookmark);
+              }
+
+              setState(() {});
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              decoration: BoxDecoration(
+                color: isBookmarked
+                    ? Colors.amber.shade100
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    isBookmarked
+                        ? Icons.bookmark
+                        : Icons.bookmark_border,
+                    color: MyColors.red,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      '${index + 1}. ${ayahs[index]}',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontFamily: 'UthmanicHafs',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

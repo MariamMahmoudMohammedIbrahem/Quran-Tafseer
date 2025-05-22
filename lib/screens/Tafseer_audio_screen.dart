@@ -61,7 +61,7 @@ class TafseerAudioScreenState extends State<TafseerAudioScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tafsir Recordings'),
-        backgroundColor: MyColors.deepGreen,
+        backgroundColor: MyColors.red,
       ),
       body: uniqueSurahs.isEmpty
           ? const Center(child: CircularProgressIndicator())
@@ -76,8 +76,8 @@ class TafseerAudioScreenState extends State<TafseerAudioScreen> {
             elevation: 2,
             child: ListTile(
               leading: CircleAvatar(
-                backgroundColor: MyColors.deepGreen,
-                foregroundColor: MyColors.darkGreen,
+                backgroundColor: MyColors.red,
+                foregroundColor: MyColors.lightWhite,
                 child: Text('${index + 1}',
                     style: const TextStyle(fontWeight: FontWeight.bold)),
               ),
@@ -86,7 +86,7 @@ class TafseerAudioScreenState extends State<TafseerAudioScreen> {
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               subtitle: const Text('Tap to listen'),
-              trailing: Icon(Icons.play_circle_outline, color: MyColors.darkGreen),
+              trailing: Icon(Icons.play_circle_outline, color: MyColors.red),
               onTap: () {
                 Navigator.push(
                   context,

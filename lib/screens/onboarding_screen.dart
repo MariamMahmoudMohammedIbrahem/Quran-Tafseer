@@ -12,23 +12,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // --> List of onboarding data (image, title, description)
   List<Map<String, String>> onboardingData = [
+    // {
+    //   'image': 'assets/images/onboarding1.png',
+    //   //'image': 'assets/images/onboarding1.png',
+    //   'title': 'مرحبًا بك',
+    //   'desc': 'اكتشف نور القرآن وابدأ رحلتك الروحية معنا',
+    // },
     {
-      'image': 'assets/images/quran1.png',
-      'title': 'مرحبًا بك',
-      'desc': 'اكتشف نور القرآن وابدأ رحلتك الروحية معنا',
-    },
-    {
-      'image': 'assets/images/quran2.png',
+      'image': 'assets/images/onboarding2.png',
+      //'image': 'assets/images/quran2.png',
       'title': 'قراءة سهلة',
       'desc': 'تصفح القرآن الكريم بسلاسة ووضوح',
     },
     {
-      'image': 'assets/images/quran3.png',
+      'image': 'assets/images/onboarding3.png',
+      //'image': 'assets/images/quran3.png',
       'title': 'تفسير مبسط',
       'desc': 'تعرف على المعاني بطريقة سهلة',
     },
     {
-      'image': 'assets/images/quran4.png',
+      'image': 'assets/images/onboarding4.png',
+      //'image': 'assets/images/quran4.png',
       'title': 'ابدأ الآن',
       'desc': 'املأ قلبك بذكر الله وابدأ رحلتك اليوم',
     },
@@ -39,24 +43,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('seenOnboarding', true); // Save onboarding completion
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => HomeScreen()), // Navigate to home
+      MaterialPageRoute(builder: (_) => MainNavigationScreen()), // Navigate to home
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          if (_currentPage < onboardingData.length - 1)
-            TextButton(
-              onPressed: finishOnboarding, // Skip onboarding
-              child: Text("Skip", style: TextStyle(color: Colors.blue)),
-            ),
-        ],
-        backgroundColor: Colors.white,
-        elevation: 0, // No shadow
-      ),
+      // appBar: AppBar(
+      //   actions: [
+      //     if (_currentPage < onboardingData.length - 1)
+      //       TextButton(
+      //         onPressed: finishOnboarding, // Skip onboarding
+      //         child: Text("Skip", style: TextStyle(color: Colors.blue)),
+      //       ),
+      //   ],
+      //   backgroundColor: Colors.white,
+      //   elevation: 0, // No shadow
+      // ),
       body: Column(
         children: [
           Expanded(
@@ -102,18 +106,39 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
           SizedBox(height: 20),
           // --> Show "ابدأ" button only on last page
-          if (_currentPage == onboardingData.length - 1)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: ElevatedButton(
+          //  if (_currentPage == onboardingData.length - 1)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              Expanded(
+                child: ElevatedButton(
                 onPressed: finishOnboarding, // Finish onboarding
-                child: Text("ابدأ"),
+                child: Text(_currentPage == onboardingData.length - 1? "Start" : "Next"),
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                  backgroundColor: Colors.green,
+                // minimumSize: Size(double.infinity, 50),
+                backgroundColor: MyColors.red,
+                foregroundColor: MyColors.lightWhite,
+                ),
                 ),
               ),
+                if (_currentPage != onboardingData.length - 1)
+                SizedBox(width: 20),
+                if (_currentPage != onboardingData.length - 1)
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: finishOnboarding, // Finish onboarding
+                    child: Text("Skip"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: MyColors.red,
+                      foregroundColor: MyColors.lightWhite,
+                    ),
+                  ),
+                ),
+              ],
             ),
+          ),
           SizedBox(height: 40),
         ],
       ),
@@ -127,7 +152,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       width: _currentPage == index ? 24 : 10, // Active dot is wider
       margin: EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
-        color: _currentPage == index ? Colors.green : Colors.grey, // Active color
+        color: _currentPage == index ? MyColors.red : Colors.grey, // Active color
         borderRadius: BorderRadius.circular(20),
       ),
     );

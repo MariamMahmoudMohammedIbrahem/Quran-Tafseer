@@ -28,7 +28,7 @@ class HomeButton extends StatelessWidget {
     super.key,
     required this.title,
     required this.onTap,
-    this.color = MyColors.deepGreen,
+    this.color = MyColors.red,
     this.textColor = MyColors.lightWhite,
   });
 
@@ -67,153 +67,144 @@ class HomeButton extends StatelessWidget {
 /// - Quran audio
 /// - Tafseer (under development)
 /// - Tafseer audio
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: MyColors.lightBeige,
-      appBar: _buildAppBar(),
-      body: _buildBody(context),
-    );
-  }
-
-  /// Builds the consistent app bar for the home screen
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: const Text(
-        'تطبيق القرآن الكريم',
-        style: TextStyle(color: MyColors.lightWhite),
-      ),
-      backgroundColor: MyColors.deepGreen,
-      centerTitle: true,
-      iconTheme: const IconThemeData(color: MyColors.lightWhite),
-
-    );
-  }
-
-  /// Constructs the main content body of the home screen
-  Widget _buildBody(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildAppLogo(),
-            height40,
-            _buildActionButtons(context),
-            height32,
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Displays the application logo/image
-  Widget _buildAppLogo() {
-    return Image.asset(
-      'assets/images/homescreen_photo.png',
-      height: 120,
-
-    );
-  }
-
-  /// Creates the column of action buttons
-  Widget _buildActionButtons(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          buildHomeButton(
-            title: 'قراءة القرآن الكريم',
-            onTap: () => _navigateTo(context, SurahListScreen()),
-          ),
-          height16,
-          buildHomeButton(
-            title: 'سماع القرآن الكريم',
-            onTap: () => _navigateTo(context, QuranAudioListScreen()),
-          ),
-          height16,
-          buildHomeButton(
-            title: 'قراءة تفسير القرآن',
-            onTap: () => _navigateTo(context, TafseerListScreen()),
-          ),
-          height16,
-          buildHomeButton(
-            title: 'سماع تفسير القرآن',
-            onTap: () => _navigateTo(context, TafseerAudioScreen()),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Button for navigating to Quran reading screen
-  // Widget _buildQuranReadingButton(BuildContext context) {
-  //   return HomeButton(
-  //     title: 'قراءة القرآن الكريم',
-  //     color: MyColors.darkGreen,
-  //     textColor: MyColors.lightWhite,
-  //     onTap: () => _navigateTo(context, SurahListScreen()),
-  //   );
-  // }
-  //
-  // /// Button for navigating to Quran audio screen
-  // Widget _buildQuranAudioButton(BuildContext context) {
-  //   return HomeButton(
-  //     title: 'سماع القرآن الكريم',
-  //     color: MyColors.darkGreen,
-  //     textColor: MyColors.lightWhite,
-  //     onTap: () => _navigateTo(context, QuranAudioListScreen()),
-  //   );
-  // }
-  //
-  // /// Button for (future) Tafseer reading feature
-  // Widget _buildTafseerReadingButton(BuildContext context) {
-  //   return HomeButton(
-  //     title: 'قراءة تفسير القرآن',
-  //     color: MyColors.darkGreen,
-  //     textColor: MyColors.lightWhite,
-  //     onTap: () => _showUnderDevelopmentSnackbar(context),
-  //   );
-  // }
-  //
-  // /// Button for navigating to Tafseer audio screen
-  // Widget _buildTafseerAudioButton(BuildContext context) {
-  //   return HomeButton(
-  //     title: 'سماع تفسير القرآن',
-  //     color: MyColors.darkGreen,
-  //     textColor: MyColors.lightWhite,
-  //     onTap: () => _navigateTo(context, TafseerListScreen()),
-  //   );
-  // }
-
-  Widget buildHomeButton({
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return HomeButton(
-      title: title,
-      color: MyColors.darkGreen,
-      textColor: MyColors.lightWhite,
-      onTap: onTap,
-    );
-  }
-
-
-  /// Helper method for navigation
-  void _navigateTo(BuildContext context, Widget screen) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => screen),
-    );
-  }
-
-  /// Shows under development notification
-  void _showUnderDevelopmentSnackbar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('الميزة تحت التطوير')),
-    );
-  }
-}
+// class HomeScreen extends StatelessWidget {
+//   const HomeScreen({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: MyColors.lightWhite,
+//       appBar: _buildAppBar(),
+//       body: _buildBody(context),
+//     );
+//   }
+//
+//   /// Builds the consistent app bar for the home screen
+//   AppBar _buildAppBar() {
+//     return AppBar(
+//       title: const Text(
+//         'تطبيق القرآن الكريم',
+//         style: TextStyle(color: MyColors.lightWhite),
+//       ),
+//       backgroundColor: MyColors.red,
+//       centerTitle: true,
+//       iconTheme: const IconThemeData(color: MyColors.lightWhite),
+//
+//     );
+//   }
+//
+//   /// Constructs the main content body of the home screen
+//   Widget _buildBody(BuildContext context) {
+//     return Center(
+//       child: SingleChildScrollView(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             _buildAppLogo(),
+//             height40,
+//             _buildActionButtons(context),
+//             height32,
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   /// Displays the application logo/image
+//   Widget _buildAppLogo() {
+//     return Image.asset(
+//       'assets/images/homescreen_photo.png',
+//       height: 120,
+//
+//     );
+//   }
+//
+//   /// Creates the column of action buttons
+//   Widget _buildActionButtons(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//       child: Column(
+//         children: [
+//           buildHomeButton(
+//             title: 'القرآن الكريم',
+//             onTap: () => _navigateTo(context, const QuranOptionsScreen()),
+//           ),
+//           height16,
+//           buildHomeButton(
+//             title: 'تفسير القرآن',
+//             onTap: () => _navigateTo(context, const TafseerOptionsScreen()),
+//           ),
+//
+//         ],
+//       ),
+//     );
+//   }
+//
+//   /// Button for navigating to Quran reading screen
+//   // Widget _buildQuranReadingButton(BuildContext context) {
+//   //   return HomeButton(
+//   //     title: 'قراءة القرآن الكريم',
+//   //     color: MyColors.darkGreen,
+//   //     textColor: MyColors.lightWhite,
+//   //     onTap: () => _navigateTo(context, SurahListScreen()),
+//   //   );
+//   // }
+//   //
+//   // /// Button for navigating to Quran audio screen
+//   // Widget _buildQuranAudioButton(BuildContext context) {
+//   //   return HomeButton(
+//   //     title: 'سماع القرآن الكريم',
+//   //     color: MyColors.darkGreen,
+//   //     textColor: MyColors.lightWhite,
+//   //     onTap: () => _navigateTo(context, QuranAudioListScreen()),
+//   //   );
+//   // }
+//   //
+//   // /// Button for (future) Tafseer reading feature
+//   // Widget _buildTafseerReadingButton(BuildContext context) {
+//   //   return HomeButton(
+//   //     title: 'قراءة تفسير القرآن',
+//   //     color: MyColors.darkGreen,
+//   //     textColor: MyColors.lightWhite,
+//   //     onTap: () => _showUnderDevelopmentSnackbar(context),
+//   //   );
+//   // }
+//   //
+//   // /// Button for navigating to Tafseer audio screen
+//   // Widget _buildTafseerAudioButton(BuildContext context) {
+//   //   return HomeButton(
+//   //     title: 'سماع تفسير القرآن',
+//   //     color: MyColors.darkGreen,
+//   //     textColor: MyColors.lightWhite,
+//   //     onTap: () => _navigateTo(context, TafseerListScreen()),
+//   //   );
+//   // }
+//
+//   Widget buildHomeButton({
+//     required String title,
+//     required VoidCallback onTap,
+//   }) {
+//     return HomeButton(
+//       title: title,
+//       color: MyColors.red,
+//       textColor: MyColors.lightWhite,
+//       onTap: onTap,
+//     );
+//   }
+//
+//
+//   /// Helper method for navigation
+//   void _navigateTo(BuildContext context, Widget screen) {
+//     Navigator.push(
+//       context,
+//       MaterialPageRoute(builder: (_) => screen),
+//     );
+//   }
+//
+//   /// Shows under development notification
+//   void _showUnderDevelopmentSnackbar(BuildContext context) {
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       const SnackBar(content: Text('الميزة تحت التطوير')),
+//     );
+//   }
+// }

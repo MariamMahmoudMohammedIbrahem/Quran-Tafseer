@@ -13,6 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   shared_preferences: ^2.0.15
+  provider: ^6.1.1
   just_audio: ^0.9.32
   http: ^1.2.0
   html: ^0.15.0

@@ -38,6 +38,8 @@ class _SurahListScreenState extends State<SurahListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("سور القرآن الكريم")),
+      backgroundColor: MyColors.red,
+      //backgroundColor: themeNotifier.value == ThemeMode.dark? MyColors.black : MyColors.red,
       body: surahs.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(

@@ -5,23 +5,42 @@ class QuranTafseer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Quraan',
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      themeMode: ThemeMode.system,
-      locale: const Locale('ar', ''),
-      supportedLocales: const [
-        Locale('en', ''),
-        Locale('ar', ''),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => BookmarkProvider()..init()), // تحميل البيانات المحفوظة
       ],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      home: const SplashScreen(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          final double scale = themeProvider.fontSize / 18.0;
+
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Quraan',
+            theme: lightTheme.copyWith(
+              textTheme: Theme.of(context).textTheme.apply(
+                fontSizeFactor: scale,
+                fontFamily: 'Cairo',
+              ),
+            ),
+            darkTheme: darkTheme.copyWith(
+              textTheme: Theme.of(context).textTheme.apply(
+                fontSizeFactor: scale,
+                fontFamily: 'Cairo',
+              ),
+            ),
+            themeMode: themeProvider.themeMode,
+            locale: const Locale('ar', ''),
+            supportedLocales: const [Locale('en'), Locale('ar')],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            home: const SplashScreen(),
+          );
+        },
+      ),
     );
   }
 }
