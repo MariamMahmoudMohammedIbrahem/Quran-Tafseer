@@ -25,3 +25,5 @@ This PR adds surah list screen.
 - - 1.json
 - - common_functions.dart
 - - tafsir_screen => adding function for load the ayahs and their tafseer from json file
+
+### Making tafseer files for each surah 

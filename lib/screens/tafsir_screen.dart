@@ -3,8 +3,9 @@ import '../commons.dart';
 class TafsirScreen extends StatefulWidget {
 
   final String surahName;
+  final String EnglishName;
 
-  const TafsirScreen({super.key, required this.surahName});
+  const TafsirScreen({super.key, required this.surahName, required this.EnglishName});
 
   @override
   State<TafsirScreen> createState() => _TafsirScreenState();
@@ -22,19 +23,12 @@ class _TafsirScreenState extends State<TafsirScreen> {
   }
 
   Future<void> loadJson() async {
-    final String response = await rootBundle.loadString('assets/json/1.json');
+    final String response = await rootBundle.loadString('assets/json/tafseer/${widget.EnglishName}.json');
     final data = json.decode(response);
 
-    final List surahs = data['surahs'];
-
-    final matched = surahs.firstWhere(
-          (item) => item['name'] == widget.surahName,
-      orElse: () => null,
-    );
-
-    if (matched != null && matched['ayahs'] != null) {
+    if (data != null && data['ayahs'] != null) {
       setState(() {
-        ayat = matched['ayahs'];
+        ayat = data['ayahs'];
       });
     }
   }
@@ -52,7 +46,7 @@ class _TafsirScreenState extends State<TafsirScreen> {
           return Column(
             children: [
               ListTile(
-                title: Text('الآية رقم ${ayah['number']}'),
+                title: Text('تفسير الآية رقم ${ayah['number']}'),
                 trailing: Icon(isOpen ? Icons.expand_less : Icons.expand_more),
                 onTap: () {
                   setState(() {

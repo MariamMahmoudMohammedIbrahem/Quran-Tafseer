@@ -33,6 +33,7 @@ flutter:
     - assets/icon/
     - assets/images/
     - assets/json/
+    - assets/json/tafseer/
 
 
 flutter_icons:

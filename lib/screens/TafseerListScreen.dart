@@ -47,7 +47,7 @@ class _TafseerListScreenState extends State<TafseerListScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => TafsirScreen(surahName: surahs[index].name),
+                            builder: (context) => TafsirScreen(surahName: surahs[index].name, EnglishName: surahs[index].englishName,),
                       ));
                     })
               //SurahItem(surah: surahs[index]),

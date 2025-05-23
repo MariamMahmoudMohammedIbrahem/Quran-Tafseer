@@ -9,9 +9,6 @@ Future<List<Surah>> loadSurahs() async {
   final List<dynamic> jsonData = json.decode(jsonString);
 
   return jsonData.map((e) => Surah.fromJson(e)).toList();
-  /*setState(() {
-    surahs = jsonData.map((e) => Surah.fromJson(e)).toList();
-  });*/
 }
 
 /// Retrieves Surah number from local JSON assets
